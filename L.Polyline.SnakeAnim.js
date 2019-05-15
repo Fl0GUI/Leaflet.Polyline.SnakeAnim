@@ -90,7 +90,7 @@ L.Polyline.include({
 // 		console.log('Distance to next point:', distance, '; Now at: ', this._snakingDistance, '; Must travel forward:', forward);
 // 		console.log('Vertices: ', this._latlngs);
 
-		if (this._snakingDistance + forward > distance) {
+		while (this._snakingDistance + forward > distance) {
 			// Jump to next vertex
 			this._snakingVertices++;
 			this._latlngs[ this._snakingRings ].push( this._snakeLatLngs[ this._snakingRings ][ this._snakingVertices ] );
@@ -108,7 +108,11 @@ L.Polyline.include({
 			}
 
 			this._snakingDistance -= distance;
-			return this._snakeForward(forward);
+            currPoint = this._map.latLngToContainerPoint(
+			    this._snakeLatLngs[ this._snakingRings ][ this._snakingVertices ]);
+		    nextPoint = this._map.latLngToContainerPoint(
+			    this._snakeLatLngs[ this._snakingRings ][ this._snakingVertices + 1 ]);
+		    distance = currPoint.distanceTo(nextPoint);
 		}
 
 		this._snakingDistance += forward;
